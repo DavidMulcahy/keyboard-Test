@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keyboard Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        h2 {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        #keyboard {
+            display: flex;
+            flex-wrap: wrap;
+            max-width: 600px;
+            gap: 5px;
+            justify-content: center;
+        }
+        .key {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            margin: 5px;
+            text-align: center;
+            line-height: 40px;
+            background-color: #ddd;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 16px;
+            color: #333;
+            padding: 0 5px;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+        /* Wider keys */
+        .key.wide {
+            width: 70px;
+        }
+        .key.arrow {
+            width: 60px; /* Make arrow keys bigger */
+        }
+        .key.space {
+            width: 120px; /* Make space key larger */
+        }
+        /* Style for currently active pressed key */
+        .active {
+            background-color: #4CAF50;
+            color: white;
+        }
+        /* Style for successfully pressed key */
+        .pressed {
+            background-color: #b2fab4; /* Light pastel green */
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <h2>Keyboard Test - Press a Key to Check Availability</h2>
+    <div id="keyboard"></div>
+
+    <script>
+        // List of keys to test with specific wider and arrow keys
+        const keys = [
+            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+            'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+            '1', '2', '3', '4', '5', '6', '7', '8', '9', '0',
+            'Enter', 'Backspace', 'Tab', 'Shift', 'Control', 'Alt', 'Escape', 'Space',
+            'Up', 'Down', 'Left', 'Right'
+        ];
+
+        // Mapping for arrow key labels
+        const arrowKeyMapping = {
+            'ArrowUp': 'Up',
+            'ArrowDown': 'Down',
+            'ArrowLeft': 'Left',
+            'ArrowRight': 'Right'
+        };
+
+        // Create keyboard display
+        const keyboardDiv = document.getElementById('keyboard');
+        keys.forEach(key => {
+            const keyDiv = document.createElement('div');
+            keyDiv.classList.add('key');
+            
+            // Apply specific classes to certain keys
+            if (['Enter', 'Backspace', 'Control', 'Shift', 'Tab', 'Space'].includes(key)) {
+                keyDiv.classList.add('wide');
+            }
+            if (['Up', 'Down', 'Left', 'Right'].includes(key)) {
+                keyDiv.classList.add('arrow');
+            }
+            if (key === 'Space') {
+                keyDiv.classList.add('space');
+                keyDiv.innerText = "Space";
+            } else {
+                keyDiv.innerText = key;
+            }
+
+            keyDiv.id = `key-${key}`;
+            keyboardDiv.appendChild(keyDiv);
+        });
+
+        // Event listener to detect key presses
+        document.addEventListener('keydown', (event) => {
+            let keyName = event.key.length === 1 ? event.key.toUpperCase() : event.key === ' ' ? 'Space' : event.key;
+            // Map arrow keys to custom names
+            if (arrowKeyMapping[event.key]) {
+                keyName = arrowKeyMapping[event.key];
+            }
+            const keyId = `key-${keyName}`;
+            const keyElement = document.getElementById(keyId);
+            if (keyElement) {
+                // Remove the "pressed" class if it was previously pressed
+                keyElement.classList.remove('pressed');
+                // Add the "active" class to indicate the key is currently pressed
+                keyElement.classList.add('active');
+                console.log(`Key ${event.key} (${event.code}) is allowed.`);
+            } else {
+                console.log(`Key ${event.key} (${event.code}) is not in the defined list.`);
+            }
+        });
+
+        // Event listener to reset key after release
+        document.addEventListener('keyup', (event) => {
+            let keyName = event.key.length === 1 ? event.key.toUpperCase() : event.key === ' ' ? 'Space' : event.key;
+            // Map arrow keys to custom names
+            if (arrowKeyMapping[event.key]) {
+                keyName = arrowKeyMapping[event.key];
+            }
+            const keyId = `key-${keyName}`;
+            const keyElement = document.getElementById(keyId);
+            if (keyElement) {
+                // Remove the "active" class and add the "pressed" class to mark as successfully pressed
+                keyElement.classList.remove('active');
+                keyElement.classList.add('pressed');
+            }
+        });
+    </script>
+</body>
+</html>
